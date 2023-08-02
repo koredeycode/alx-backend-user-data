@@ -27,13 +27,10 @@ class RedactingFormatter(logging.Formatter):
         return filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
 
 
-#def filter_datum(fields: List[str], redaction: str,
- #                message: str, separator: str) -> str:
-  #  """return the log message obfuscated with the readacted string"""
-   # pattern = r'({}=)[^{}]+'.format('=|'.join(fields), separator)
-    #return re.sub(pattern, r'\1{}'.format(redaction), message)
-def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
+def filter_datum(fields: List[str], redaction: str,
+                 message: str, separator: str) -> str:
     """return the log message obfuscated with the readacted string"""
-    extract_pattern = r'(?P<field>{})=[^{}]*'.format('|'.join(fields), re.escape(separator))
+    extract_pattern = r'(?P<field>{})=[^{}]*'.format('|'.join(fields),
+                                                     re.escape(separator))
     replace_pattern = r'\g<field>={}'.format(redaction)
     return re.sub(extract_pattern, replace_pattern, message)
