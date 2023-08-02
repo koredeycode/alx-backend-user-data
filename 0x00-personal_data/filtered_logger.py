@@ -34,3 +34,16 @@ def filter_datum(fields: List[str], redaction: str,
                                                      re.escape(separator))
     replace_pattern = r'\g<field>={}'.format(redaction)
     return re.sub(extract_pattern, replace_pattern, message)
+
+
+def get_logger() -> logging.Logger:
+    """
+    return a Logger object fro user data
+    """
+    logger = logging.getLogger("user_data")
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(RedactingFormatter(PII_FIELDS))
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    logger.addHandler(stream_handler)
+    return logger
