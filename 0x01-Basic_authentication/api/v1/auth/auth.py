@@ -14,7 +14,9 @@ class Auth:
         """
         public method
         """
-        return False
+        if (path is None or excluded_paths is None or excluded_paths == []):
+            return True
+        return all([path not in p for p in excluded_paths])
 
     def authorization_header(self, request=None) -> str:
         """
