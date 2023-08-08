@@ -4,7 +4,7 @@ Class to manage the API authentication
 """
 from flask import request
 from typing import List, TypeVar
-
+import re
 
 class Auth:
     """
@@ -14,9 +14,18 @@ class Auth:
         """
         public method
         """
-        if (path is None or excluded_paths is None or excluded_paths == []):
-            return True
-        return all([path not in p for p in excluded_paths])
+        if path is not None and excluded_paths is not None:
+            for exclusion_path in map(lambda x: x.strip(), excluded_paths):
+                pattern = ''
+                if exclusion_path[-1] == '*':
+                    pattern = '{}.*'.format(exclusion_path[0:-1])
+                elif exclusion_path[-1] == '/':
+                    pattern = '{}/*'.format(exclusion_path[0:-1])
+                else:
+                    pattern = '{}/*'.format(exclusion_path)
+                if re.match(pattern, path):
+                    return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """
