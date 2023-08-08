@@ -47,7 +47,9 @@ class BasicAuth(Auth):
         header = decoded_base64_header
         if header is None or type(header) is not str or ":" not in header:
             return None, None
-        return tuple(header.split(":"))
+        creds = header.split(":")
+        email, pwd = creds[0], ":".join(creds[1:])
+        return email, pwd
 
     def user_object_from_credentials(self, user_email: str,
                                      user_pwd: str) -> TypeVar('User'):
