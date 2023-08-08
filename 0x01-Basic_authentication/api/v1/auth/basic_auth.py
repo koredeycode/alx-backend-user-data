@@ -4,8 +4,9 @@ Class to manage the Basic authentication
 """
 from flask import request
 from typing import List, TypeVar
-from .auth import Auth
+from api.v1.auth.auth import Auth
 import base64
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -57,3 +58,10 @@ class BasicAuth(Auth):
             return None
         if user_pwd is None or type(user_pwd) is not str:
             return None
+        users = User.search({'email': user_email})
+        if len(users) == 0:
+            return None
+        user = users[0]
+        if user is None or not user.is_valid_password(user_pwd):
+            return None
+        return user
