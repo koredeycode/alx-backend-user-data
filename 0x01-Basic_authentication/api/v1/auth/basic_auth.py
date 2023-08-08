@@ -47,3 +47,13 @@ class BasicAuth(Auth):
         if header is None or type(header) is not str or ":" not in header:
             return None, None
         return tuple(header.split(":"))
+
+    def user_object_from_credentials(self, user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """
+        return the User instance based on his email and password
+        """
+        if user_email is None or type(user_email) is not str:
+            return None
+        if user_pwd is None or type(user_pwd) is not str:
+            return None
