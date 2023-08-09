@@ -7,7 +7,7 @@ from typing import TypeVar
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class SessionDBAuth(SessionExpAuth):
@@ -33,8 +33,8 @@ class SessionDBAuth(SessionExpAuth):
             return None
         session = sessions[0]
         created_at = session.created_at
-        lapse = datetime.now() - created_at
-        if lapse.seconds > self.session_duration:
+        difference = timedelta(seconds=self.session_duration)
+        if created_at + difference < datetime.now():
             return None
         return session.user_id
 

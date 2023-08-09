@@ -7,7 +7,7 @@ from typing import TypeVar
 from api.v1.auth.session_auth import SessionAuth
 from models.user import User
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from os import getenv
 
 
@@ -21,7 +21,6 @@ class SessionExpAuth(SessionAuth):
         """
         try:
             self.session_duration = int(getenv('SESSION_DURATION'))
-            print(self.session_duration)
         except Exception:
             self.session_duration = 0
 
@@ -52,7 +51,7 @@ class SessionExpAuth(SessionAuth):
         created_at = session_dict.get('created_at')
         if created_at is None:
             return None
-        lapse = datetime.now() - created_at
-        if lapse.seconds > self.session_duration:
+        difference = timedelta(seconds=self.session_duration)
+        if created_at + difference < datetime.now():
             return None
         return session_dict.get('user_id')
