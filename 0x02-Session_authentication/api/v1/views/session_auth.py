@@ -32,3 +32,16 @@ def session_handler() -> str:
     out = jsonify(user.to_json())
     out.set_cookie(getenv('SESSION_NAME'), session_id)
     return out
+
+
+@app_views.route('/auth_session/logout', methods=['DELETE'],
+                 strict_slashes=False)
+def logout_handler() -> str:
+    """
+    logout the current user session
+    """
+    from api.v1.app import auth
+    ret = auth.destroy_session(request)
+    if ret is False:
+        abort(404)
+    return jsonify({}), 200

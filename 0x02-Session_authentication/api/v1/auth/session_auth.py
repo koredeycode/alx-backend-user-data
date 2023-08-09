@@ -3,10 +3,8 @@
 Class to manage the Basic authentication
 """
 
-# from flask import request
 from typing import TypeVar
 from api.v1.auth.auth import Auth
-# import base64
 from models.user import User
 import uuid
 
@@ -42,3 +40,18 @@ class SessionAuth(Auth):
         cookie = self.session_cookie(request)
         user_id = self.user_id_for_session_id(cookie)
         return User.get(user_id)
+
+    def destroy_session(self, request=None):
+        """
+        delete the user session or logout
+        """
+        if request is None:
+            return False
+        cookie = self.session_cookie(request)
+        if cookie is None:
+            return False
+        user_id = self.user_id_for_session_id(cookie)
+        if user_id is None:
+            return False
+        del self.user_id_by_session_id[cookie]
+        return True
