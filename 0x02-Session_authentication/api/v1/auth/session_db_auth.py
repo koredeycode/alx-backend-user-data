@@ -3,7 +3,6 @@
 Class to manage the SessionDB authentication
 """
 
-from typing import TypeVar
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
 from datetime import datetime, timedelta
@@ -19,6 +18,8 @@ class SessionDBAuth(SessionExpAuth):
         overload the create_session method
         """
         session_id = super().create_session(user_id)
+        if type(session_id) is not str:
+            return None
         session = UserSession(session_id=session_id, user_id=user_id)
         session.save()
         return session_id
