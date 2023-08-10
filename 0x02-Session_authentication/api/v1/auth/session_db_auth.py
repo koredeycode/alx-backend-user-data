@@ -6,7 +6,6 @@ Class to manage the SessionDB authentication
 from typing import TypeVar
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
-import uuid
 from datetime import datetime, timedelta
 
 
@@ -19,7 +18,7 @@ class SessionDBAuth(SessionExpAuth):
         """
         overload the create_session method
         """
-        session_id = str(uuid.uuid4())
+        session_id = super().create_session(user_id)
         session = UserSession(session_id=session_id, user_id=user_id)
         session.save()
         return session_id
@@ -28,7 +27,10 @@ class SessionDBAuth(SessionExpAuth):
         """
         overload the user_id_for_session_id method
         """
-        sessions = UserSession.search({"session_id": session_id})
+        try:
+            sessions = UserSession.search({"session_id": session_id})
+        except Exception:
+            return None
         if sessions is None or len(sessions) <= 0:
             return None
         session = sessions[0]
@@ -44,12 +46,13 @@ class SessionDBAuth(SessionExpAuth):
         """
         overload the destroy_session method
         """
-        if request is None:
-            return False
         cookie = self.session_cookie(request)
         if cookie is None:
             return False
-        sessions = UserSession.search({'session_id': cookie})
+        try:
+            sessions = UserSession.search({'session_id': cookie})
+        except Exception:
+            return False
         if len(sessions) <= 0:
             return False
         session = sessions[0]
