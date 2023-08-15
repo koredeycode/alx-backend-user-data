@@ -5,7 +5,6 @@ the auth module
 import bcrypt
 from db import DB
 from user import User
-from typing import TypeVar
 import uuid
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -24,7 +23,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str) -> TypeVar("User"):
+    def register_user(self, email: str, password: str) -> User:
         """
         register a user to the database
         """
@@ -64,7 +63,7 @@ class Auth:
         self._db.update_user(user.id, session_id=session_id)
         return session_id
 
-    def get_user_from_session_id(self, session_id: str) -> TypeVar('User'):
+    def get_user_from_session_id(self, session_id: str) -> User:
         """
         find a user with the session_id
         """
