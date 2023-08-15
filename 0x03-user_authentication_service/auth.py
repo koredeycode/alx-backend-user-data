@@ -16,6 +16,13 @@ def _hash_password(password: str) -> bytes:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
+def _generate_uuid() -> str:
+    """
+    generate a new uuid
+    """
+    return str(uuid.uuid4())
+
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
@@ -45,11 +52,6 @@ class Auth:
             return False
         return bcrypt.checkpw(password.encode(), user.hashed_password)
 
-    def _generate_uuid() -> str:
-        """
-        generate a new uuid
-        """
-        return str(uuid.uuid4())
 
     def create_session(self, email: str) -> str:
         """
@@ -59,7 +61,7 @@ class Auth:
             user = self._db.find_user_by(email=email)
         except Exception:
             return
-        session_id = self._generate_uuid()
+        session_id = _generate_uuid()
         self._db.update_user(user.id, session_id=session_id)
         return session_id
 
@@ -87,7 +89,7 @@ class Auth:
             user = self._db.find_user_by(email=email)
             if user is None:
                 raise ValueError
-            token = self._generate_uuid()
+            token = _generate_uuid()
             self._db.update_user(user.id, reset_token=token)
             return token
         except Exception:
