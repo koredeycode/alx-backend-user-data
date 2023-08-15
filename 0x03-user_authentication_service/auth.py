@@ -45,7 +45,7 @@ class Auth:
             return False
         return bcrypt.checkpw(password.encode(), user.hashed_password)
 
-    def _generate_uuid(self) -> str:
+    def _generate_uuid() -> str:
         """
         generate a new uuid
         """
