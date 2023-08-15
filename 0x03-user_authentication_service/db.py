@@ -10,8 +10,6 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from user import Base, User
 
-from typing import TypeVar
-
 
 class DB:
     """DB class
@@ -39,15 +37,15 @@ class DB:
         add user to the database
         """
         try:
-            newuser = User(email=email, hashed_password=hashed_password)
-            self._session.add(newuser)
+            user = User(email=email, hashed_password=hashed_password)
+            self._session.add(user)
             self._session.commit()
         except Exception:
             self._session.rollback()
-            newuser = None
-        return newuser
+            user = None
+        return user
 
-    def find_user_by(self, **kwargs) -> TypeVar("User"):
+    def find_user_by(self, **kwargs) -> User:
         """
         find a user from the database
         """
