@@ -57,10 +57,10 @@ class DB:
                 col = getattr(User, k)
                 query = query.filter(col == v)
             else:
-                raise InvalidRequestError
+                raise InvalidRequestError()
         user = query.first()
         if user is None:
-            raise NoResultFound
+            raise NoResultFound()
         return user
 
     def update_user(self, user_id, **kwargs) -> None:
@@ -74,5 +74,5 @@ class DB:
             if hasattr(user, k):
                 setattr(user, k, v)
             else:
-                raise ValueError
+                raise ValueError()
         self._session.commit()

@@ -7,6 +7,7 @@ from db import DB
 from user import User
 from typing import TypeVar
 import uuid
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _hash_password(password: str) -> bytes:
@@ -29,12 +30,11 @@ class Auth:
         """
         try:
             user = self._db.find_user_by(email=email)
-        except Exception:
+        except NoResultFound:
             hashed_pwd = _hash_password(password)
             user = self._db.add_user(email, hashed_pwd)
             return user
-        if user is not None:
-            raise ValueError("User {} already exists".format(email))
+        raise ValueError("User {} already exists".format(email))
 
     def valid_login(self, email: str, password: str) -> bool:
         """
