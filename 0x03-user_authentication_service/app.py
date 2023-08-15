@@ -47,7 +47,7 @@ def login():
 
 
 @app.route('/sessions', methods=['DELETE'])
-def logout():
+def logout() -> str:
     """
     endpoint to logout a user
     """
